@@ -13,17 +13,18 @@ spec:
               revision: HEAD
               directories:
                 - path: applicationset/examples/*
-          # cluster generator, 'child' #2
-          - clusters:
-              selector:
-                matchLabels:
-                  argocd.argoproj.io/secret-type: cluster
-          # cluster generator, 'child' #2
+          # cluster all
+          - clusters: {}
   template:
     metadata:
       name: '{{path.basename}}-{{name}}'
     spec:
       project: default
+      syncPolicy: 
+        automated:
+          selfHeal: true    
+        syncOptions:
+        - CreateNamespace=true  
       source:
         repoURL: https://github.com/codefresh-contrib/gitops-cert-level-2-examples.git
         targetRevision: HEAD
@@ -31,8 +32,3 @@ spec:
       destination:
         server: '{{server}}'
         namespace: '{{path.basename}}'
-      syncPolicy: 
-        automated:
-          selfHeal: true    
-        syncOptions:
-        - CreateNamespace=true  
